@@ -45,6 +45,7 @@ class gcode
         
         // receive
         bool available();
+        bool availableSD(char inChar);
         bool available(char inChar);
         bool availableValue(char commandLetter);
         double GetValue(char commandLetter);
@@ -54,6 +55,7 @@ class gcode
         String nextComandcommentString;
         bool nextRead = false;
         bool restIsComment = false;
+        bool validCommand = false;
 
         commandscallback *commandscallbacks; 
         int NumberOfCommands = 0;

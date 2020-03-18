@@ -90,6 +90,7 @@ bool gcode::available()
     this->comment(nextComandcommentString);
     nextRead = false;
     restIsComment = false;
+    validCommand = false;
     this->clearBuffer();
   }
   while (Serial.available()) 
@@ -101,6 +102,19 @@ bool gcode::available()
     }
   }
   return false;
+}
+
+bool gcode::availableSD(char inChar)
+{
+  if(nextRead)
+  {
+    this->comment(nextComandcommentString);
+    nextRead = false;
+    restIsComment = false;
+    validCommand = false;
+    this->clearBuffer();
+  }
+  return this->available(inChar);
 }
 
 bool gcode::available(char inChar)
@@ -126,15 +140,16 @@ bool gcode::available(char inChar)
         if(testString == commandscallbackstest.value)
         {
           commandscallbackstest.Callback();
+          validCommand = true;
         }
       }
     }
     if(runCallback != NULL)
       runCallback();
-    return true;
+    return validCommand;
   }
 
-  if(inChar == ';' || restIsComment)
+  if(inChar == ';' || inChar == '(' ||  restIsComment)
   {
     restIsComment = true;
     return false;
